@@ -22,7 +22,7 @@ export class HeroComponent implements OnInit {
   };
 
   getHeroes(): void {
-    this.heroService.getHeroesSlowly().then(heroes => this.heroes = heroes);
+    this.heroService.getHeroes().then(heroes => this.heroes = heroes);
   };
 
   onSelect(hero: Hero): void {
@@ -31,5 +31,27 @@ export class HeroComponent implements OnInit {
 
   gotoDetail(): void {
     this.router.navigate(['/detail', this.selectedHero.id]);
+  }
+
+  add(name: string): void {
+    name = name.trim();
+
+    if(!name) return;
+
+    this.heroService.create(name)
+      .then(hero => {
+        this.heroes.push(hero);
+        this.selectedHero = null;
+      })
+  }
+
+  delete(hero: Hero): void {
+    this.heroService.delete(hero.id)
+      .then(hero => {
+        this.heroes = this.heroes.filter(h => h.id !== hero.id);
+        if(this.selectedHero === hero) {
+          this.selectedHero = null;
+        }
+      })
   }
 }
